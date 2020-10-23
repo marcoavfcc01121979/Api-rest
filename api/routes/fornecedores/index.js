@@ -40,7 +40,8 @@ router.get('/:idFornecedor', async (req, res, next) => {
     await fornecedor.carregar()
     res.status(200)
     const serializador = new SerializadorFornecedor(
-      res.getHeader('Content-Type')
+      res.getHeader('Content-Type'),
+      ['email', 'dataCriacao', 'dataAtualizacao', 'versao']
     )
     res.send(
       serializador.serializar(fornecedor)

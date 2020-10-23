@@ -3,6 +3,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const config = require('config');
 const formatosAceitos = require('./Serializador').formatosAceitos;
+const { SerializadorErro } = require('./Serializador')
 
 app.use(bodyParser.json());
 
@@ -45,9 +46,13 @@ app.use((erro, req, res, next) => {
     status = 406
   }
 
+  const serializador = new SerializadorErro(
+    res.getHeader('Content-Type')
+  )
+
   res.status(status)
   res.send(
-    JSON.stringify({
+    serializador.serializar({
       mensagem: erro.message,
       id: erro.idErro
     })
