@@ -40,6 +40,53 @@ class Produto {
   apagar () {
     return Tabela.remover(this.id, this.fornecedor)
   }
+
+  async carregar() {
+    const produto = await Tabela.pegarPorId(this.id, this.fornecedor)
+    this.titulo = produto.titulo
+    this.preco = produto.preco
+    this.estoque = produto.estoque
+    this.dataCriacao = produto.dataCriacao
+    this.dataAtualizacao = produto.dataAtualizacao
+    this.versao = produto.versao
+  }
+
+  atualizar() {
+    const dadosParaAtualizar = {}
+
+    if(typeof this.titulo === 'string' && this.titulo.length > 0) {
+      dadosParaAtualizar.titulo = this.titulo
+    }
+
+    if(typeof this.preco === 'number' && this.preco > 0) {
+      dadosParaAtualizar.preco = this.preco
+    }
+
+    if(typeof this.estoque === 'number') {
+      dadosParaAtualizar.estoque = this.estoque
+    }
+
+    if(Object.keys(dadosParaAtualizar).length === 0 ) {
+      throw new Error('Não foram fornecidos dados para atualizar')
+    }
+
+    return Tabela.atualizar(
+      {
+        id: this.id,
+        fornecedor: this.fornecedor
+      },
+      dadosParaAtualizar
+    )
+  }
+
+  diminuirEstoque() {
+    return Tabela.subtrair(
+      this.id,
+      this.fornecedor,
+      'estoque',
+      this.estoque
+    )
+  }
 }
 
 module.exports = Produto
