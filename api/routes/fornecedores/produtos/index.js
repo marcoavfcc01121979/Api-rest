@@ -5,6 +5,14 @@ const router = Router({ mergeParams: true })
 const Produto = require('./Produto');
 const { SerializadorProduto } = require('../../../Serializador')
 
+router.options('/', (req, res) => {
+  res.set('Access-Control-Allow-Methods', 'GET, POST')
+  res.set('Access-Control-Allow-Headers', 'Content-Type')
+  res.status(204)
+  res.end()
+})
+
+
 router.get('/', async (req, res) => {
   const produtos = await Tabela.listar(req.fornecedor.id)
   const serializador = new SerializadorProduto(
@@ -36,6 +44,13 @@ router.post('/', async (req, res, next) => {
   }catch(erro) {
     next(erro);
   }
+})
+
+router.options('/:id', (req, res) => {
+  res.set('Access-Control-Allow-Methods', 'DELETE, GET, HEAD, PUT')
+  res.set('Access-Control-Allow-Headers', 'Content-Type')
+  res.status(204)
+  res.end()
 })
 
 router.delete('/:id', async (req, res) => {
@@ -116,6 +131,13 @@ router.put('/:id', async (req, res, next) => {
   } catch(erro) {
     next(erro)
   }
+})
+
+router.options('/:id/diminuir-estoque', (req, res) => {
+  res.set('Access-Control-Allow-Methods', 'POST')
+  res.set('Access-Control-Allow-Headers', 'Content-Type')
+  res.status(204)
+  res.end()
 })
 
 router.post('/:id/diminuir-estoque', async (req, res, next) => {

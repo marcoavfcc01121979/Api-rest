@@ -23,12 +23,20 @@ app.use((req, res, next) => {
   next()
 })
 
+app.use((req, res, next) => {
+  res.set('Access-Control-Allow-Origin', '*')
+  next()
+})
+
 const router = require('./routes/fornecedores');
 const NaoEncontrado = require('./error/NaoEncontrado');
 const CampoInvalido = require('./error/CampoInvalido');
 const DadosNaoFornecidos = require('./error/DadosNaoFornecidos');
 const ValorNaoSuportado = require('./error/ValorNaoSuportado');
 app.use('/api/fornecedores', router)
+
+const routerV2 = require('./routes/fornecedores/routes.v2');
+app.use('/api/v2/fornecedores', routerV2);
 
 app.use((erro, req, res, next) => {
   let status = 500

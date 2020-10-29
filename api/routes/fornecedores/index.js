@@ -3,12 +3,19 @@ const TabelaFornecedor = require('./TabelaFornecedor');
 const Fornecedor = require('./Fornecedor');
 const { SerializadorFornecedor } = require('../../Serializador');
 
+router.options('/', (req, res) => {
+  res.set('Access-Control-Allow-Methods', 'GET, POST')
+  res.set('Access-Control-Allow-Headers', 'Content-Type')
+  res.status(204)
+  res.end()
+})
 
 router.get('/', async (req, res) => {
   const resultados = await TabelaFornecedor.listar()
   res.status(200)
   const serializador = new SerializadorFornecedor(
-    res.getHeader('Content-Type')
+    res.getHeader('Content-Type'),
+    ['empresa']
   )
   res.send(
     serializador.serializar(resultados)
@@ -23,7 +30,8 @@ router.post('/', async (req, res, next) => {
     await fornecedor.criar()
     res.status(201)
     const serializador = new SerializadorFornecedor(
-      res.getHeader('Content-Type')
+      res.getHeader('Content-Type'),
+      ['empresa']
     )
     res.send(
       serializador.serializar(fornecedor)
@@ -31,6 +39,13 @@ router.post('/', async (req, res, next) => {
   }catch(erro) {
     next(erro)
   }
+})
+
+router.options('/:idFornecedor', (req, res) => {
+  res.set('Access-Control-Allow-Methods', 'GET, PUT, DELETE')
+  res.set('Access-Control-Allow-Headers', 'Content-Type')
+  res.status(204)
+  res.end()
 })
 
 router.get('/:idFornecedor', async (req, res, next) => {
@@ -41,7 +56,7 @@ router.get('/:idFornecedor', async (req, res, next) => {
     res.status(200)
     const serializador = new SerializadorFornecedor(
       res.getHeader('Content-Type'),
-      ['email', 'dataCriacao', 'dataAtualizacao', 'versao']
+      ['email', 'empresa', 'dataCriacao', 'dataAtualizacao', 'versao']
     )
     res.send(
       serializador.serializar(fornecedor)
